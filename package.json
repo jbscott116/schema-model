@@ -2,7 +2,7 @@
   "name": "schema-model",
   "version": "1.0.0",
   "description": "Safely apply nested object data to a model based on a schema.",
-  "main": "Model.js",
+  "main": "SchemaModel.js",
   "scripts": {
     "test": "jest"
   },
@@ -16,6 +16,7 @@
     "url": "https://github.com/jbscott116/schema-model.git"
   },
   "keywords": [
+    "object-validation",
     "model",
     "data",
     "schema",
