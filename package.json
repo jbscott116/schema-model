@@ -1,0 +1,24 @@
+{
+  "name": "schema-model",
+  "version": "1.0.0",
+  "description": "Safely apply nested object data to a model based on a schema.",
+  "main": "Model.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Jacob Scott",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^24.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "test"
+  },
+  "keywords": [
+    "model",
+    "data",
+    "schema",
+    "object"
+  ]
+}
