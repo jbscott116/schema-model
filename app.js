@@ -1,4 +1,4 @@
-const Model = require('./Model')
+const SchemaModel = require('./SchemaModel')
 
 const BASE_MODEL = {
     name: String,
@@ -35,7 +35,7 @@ var appendSchema = {
     }
 }
 
-var myModel = new Model(BASE_MODEL)
+var myModel = new SchemaModel(BASE_MODEL)
 myModel.clear()
 console.log(myModel.model)
 

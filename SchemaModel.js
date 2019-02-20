@@ -1,4 +1,4 @@
-class Model {
+class SchemaModel {
 
     constructor(schema) {
         if (!schema)
@@ -25,7 +25,7 @@ class Model {
         schemaKeys.forEach(function(key, i, arr) {
             var schemaModelValue = self.schema[key]
             if (isObject(schemaModelValue)) {
-                var subModel = new Model(schemaModelValue)
+                var subModel = new SchemaModel(schemaModelValue)
                 self.model[key] = subModel.clear()
                 self.blank[key] = subModel.clear()
             }
@@ -63,7 +63,7 @@ class Model {
             }
             if (schemaModelValue instanceof Array) {
                 if (schemaModelValue.length && isObject(schemaModelValue[0]) && Object.keys(schemaModelValue[0]).length) {
-                    self.itemSchemas[key] = new Model(schemaModelValue[0])
+                    self.itemSchemas[key] = new SchemaModel(schemaModelValue[0])
                     self.schema[key] = Array
                     self.model[key] = []
                     self.blank[key] = []
@@ -100,7 +100,7 @@ class Model {
 
                 // Object - Recursive property application
                 if (isObject(schemaModelValue) && !(schemaModelValue instanceof Array)) {
-                    var subModel = new Model(schemaModelValue)
+                    var subModel = new SchemaModel(schemaModelValue)
                     self.model[key] = subModel.apply(propValue, appendArrayItems)
                 }
 
@@ -153,7 +153,7 @@ class Model {
                         // Use an existing array item schema
                         if (self.itemSchemas[key]) {
                             propValue.forEach(function(item, i, arr) {
-                                var itemModel = new Model(self.itemSchemas[key].schema)
+                                var itemModel = new SchemaModel(self.itemSchemas[key].schema)
                                 itemModel.apply(item, appendArrayItems)
                                 self.model[key].push(itemModel.model)
                             })
@@ -177,27 +177,27 @@ class Model {
         return this.model
     }
 
-    appendSchema(newSchema) {
+    /* appendSchema(newSchema) {
         var self = this;
         var newSchemaKeys = Object.keys(newSchema)
         newSchemaKeys.forEach(function(key, i, arr) {
             self.schema[key] = newSchema[key];
         })
-    }
+    } */
 
     /** @method readSchema()
      * Returns a human-readable string of the schema
      */
-    readSchema() {
+    /* readSchema() {
         return true
-    }
+    } */
 
     /** @method flatten() 
      * Flattens the model
     */
-    flatten() {
+    /* flatten() {
         return true
-    }
+    } */
 };
 
 function isObject(value) {
@@ -236,4 +236,4 @@ function Integer() {
     return 0;
 }
 
-module.exports = Model;
+module.exports = SchemaModel;

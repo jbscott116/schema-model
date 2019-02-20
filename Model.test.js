@@ -1,4 +1,4 @@
-const Model = require('./Model')
+const SchemaModel = require('./SchemaModel')
 var SCHEMA = {
     username: String,
     accountNumber: Number,
@@ -87,24 +87,24 @@ const DEEP_SCHEMA = {
     }]
 }
 
-describe('Model', () => {
+describe('SchemaModel', () => {
     describe ('constructor()', () => {
-        test('constructs an instance of Model', () => {
-            expect(new Model(SCHEMA)).toBeInstanceOf(Model)
+        test('constructs an instance of SchemaModel', () => {
+            expect(new SchemaModel(SCHEMA)).toBeInstanceOf(SchemaModel)
         })
     
         test('throws an error when no schema is provided', () => {
-            expect(() => {return new Model()}).toThrow();
+            expect(() => {return new SchemaModel()}).toThrow();
         })
     
         test('builds the blank model', () => {
-            var model = new Model(SCHEMA);
+            var model = new SchemaModel(SCHEMA);
             expect(model.blank).toStrictEqual(BLANK)
         })
     })
 
-    describe('Model.clear()', () => {
-        var model = new Model(SCHEMA)
+    describe('SchemaModel.clear()', () => {
+        var model = new SchemaModel(SCHEMA)
         var properties = {
             username: 'scott89',
             contact: {
@@ -127,7 +127,7 @@ describe('Model', () => {
     })
 
     describe('apply(properties)', () => {
-        var model = new Model(SCHEMA);
+        var model = new SchemaModel(SCHEMA);
         var properties = {
             username: 'scott89',
             contact: {
@@ -174,7 +174,7 @@ describe('Model', () => {
         })
 
         describe('Valid value types when applying', () => {
-            var typeModel = new Model(TYPE_SCHEMA)
+            var typeModel = new SchemaModel(TYPE_SCHEMA)
             test('valid number (parse string)', () => {
                 expect(() => {return typeModel.apply({number: '5'})}).not.toThrow()
             })
@@ -217,7 +217,7 @@ describe('Model', () => {
         })
 
         describe('TypeErrors when applying different value types', () => {
-            var typeModel = new Model(TYPE_SCHEMA);
+            var typeModel = new SchemaModel(TYPE_SCHEMA);
             test('invalid number (cannot parse)', () => {
                 expect(() => {return typeModel.apply({number: 'x'})}).toThrow()
             })
@@ -239,30 +239,30 @@ describe('Model', () => {
         })
 
         describe('String -> Number(float) conversions', () => {
-            var floatModel = new Model({float: Number});
+            var floatModel = new SchemaModel({float: Number});
         })
     })
 
     describe('Schemas for array items', () => {
         describe('constructor()', () => {
-            test('Model constructs successfully', () => {
-                expect(() => {return new Model(ARRAY_MODEL_SCHEMA)}).not.toThrow();
+            test('SchemaModel constructs successfully', () => {
+                expect(() => {return new SchemaModel(ARRAY_MODEL_SCHEMA)}).not.toThrow();
             })
-            test('Model contains arrayModel', () => {
-                var myArrayModel = new Model(ARRAY_MODEL_SCHEMA)
+            test('SchemaModel contains arrayModel', () => {
+                var myArrayModel = new SchemaModel(ARRAY_MODEL_SCHEMA)
                 var expectedArraySchema = {
                     car: Boolean,
                     cat: Boolean,
                     dog: Boolean
                 }
                 expect(myArrayModel.itemSchemas.list).toBeDefined()
-                expect(myArrayModel.itemSchemas.list).toBeInstanceOf(Model)
+                expect(myArrayModel.itemSchemas.list).toBeInstanceOf(SchemaModel)
                 expect(myArrayModel.itemSchemas.list.schema).toStrictEqual(expectedArraySchema)
             })
         })
 
         describe('apply()', () => {
-            var myArrayModel = new Model(ARRAY_MODEL_SCHEMA)
+            var myArrayModel = new SchemaModel(ARRAY_MODEL_SCHEMA)
             var properties = {
                 name: 'dog',
                 list: [
@@ -272,7 +272,7 @@ describe('Model', () => {
             test('Applying arrayModel to array items throws no errors', () => {
                 expect(() => {return myArrayModel.apply(properties)}).not.toThrow()
             })
-            test('Model is applied as expected', () => {
+            test('SchemaModel is applied as expected', () => {
                 myArrayModel.apply(properties)
                 expect(myArrayModel.model).toStrictEqual(properties)
             })
@@ -287,11 +287,11 @@ describe('Model', () => {
     describe('Deep schemas and array schemas', () => {
         describe('constructor()', () => {
             test('construting deep schema model throws no errors', () => {
-                expect(() => {return new Model(DEEP_SCHEMA)}).not.toThrow();
+                expect(() => {return new SchemaModel(DEEP_SCHEMA)}).not.toThrow();
             })
         })
 
-        var deepModel = new Model(DEEP_SCHEMA)
+        var deepModel = new SchemaModel(DEEP_SCHEMA)
         var properties = {
             name: 'Jacob Scott',
             number: 87,
@@ -329,13 +329,13 @@ describe('Model', () => {
                 expect(() => {return deepModel.apply(properties)}).not.toThrow()
             })
             test('deep model is as expected', () => {
-                var newDeepModel = new Model(DEEP_SCHEMA)
+                var newDeepModel = new SchemaModel(DEEP_SCHEMA)
                 newDeepModel.apply(properties)
                 expect(newDeepModel.model).toStrictEqual(properties)
             })
 
             describe('appending to deeply nested arrays (doesn\'t work)', () => {
-                var deepNestedArraysModel = new Model(DEEP_SCHEMA)
+                var deepNestedArraysModel = new SchemaModel(DEEP_SCHEMA)
                 deepNestedArraysModel.apply(properties)
                 deepNestedArraysModel.apply(additionalPostsAndComments, true)
                 test('top-level arrays are the expected length', () => {
@@ -346,14 +346,14 @@ describe('Model', () => {
                 })
             })
 
-            var yetAnotherModel = new Model(DEEP_SCHEMA)
+            var yetAnotherModel = new SchemaModel(DEEP_SCHEMA)
             yetAnotherModel.apply(properties);
             var newComment = {
                 id: 'newComment',
                 content: 'lorem ipsum dolor sit amet'
             }
             describe('correct way of appending to deeply nested arrays', () => {
-                var newCommentModel = new Model(yetAnotherModel.itemSchemas.posts.itemSchemas.comments.schema)
+                var newCommentModel = new SchemaModel(yetAnotherModel.itemSchemas.posts.itemSchemas.comments.schema)
                 newCommentModel.apply(newComment)
                 yetAnotherModel.model.posts[0].comments.push(newCommentModel.model)
                 yetAnotherModel.apply(yetAnotherModel.model)
