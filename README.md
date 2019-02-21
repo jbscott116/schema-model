@@ -6,7 +6,7 @@ Safely apply nested object data to a model based on a predefined schema. The pri
 # Installing
 Download from NPM
 ```
-npm install object-schema model
+npm install object-schema-model
 ```
 Add it to your project
 ```
@@ -60,10 +60,33 @@ mySchemaModel.apply(data)
 ```
 
 ## Defining schemas for Array items
-Array items can be passed through SchemaModel instances as well.
+Array items can be passed through SchemaModel instances as well. Define array item schemas by adding a SchemaModel instance within an Array.
+```
+var SCHEMA = {
+    characters: [new SchemaModel({
+        name: String,
+        number: Number,
+        movie: String
+    })]
+}
+var myModel = new SchemaModel(SCHEMA)
+```
+The items within any arrays that are applied to `myModel` will be passed through the defined SchemaModel instance to enforce data integrity. 
 
 ## Set default model values
 When creating a new instance of SchemaModel, you can specify default model values that will override the internal defaults. For example, models that are Numbers will be set to _0_. By adding the _defaults_ parameter, you can change this to _5_.
+```
+var SCHEMA = {
+    name: String,
+    id: Number
+}
+
+var mySchemaModel = new SchemaModel(SCHEMA);
+// mySchemaModel.model is {name: '', id: 0}
+
+var withDefaults = new SchemaModel(SCHEMA, {name: 'Vader', id: 1})
+// withDefaults.model is {name: 'Vader', id: 1}
+```
 
 # The SchemaModel class
 ## Properties
