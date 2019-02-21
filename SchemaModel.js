@@ -59,7 +59,7 @@ class SchemaModel {
                 else {
                     if (defaultValue.constructor.name !== 'String')
                         throw new TypeError('Default value for key ' + key + ' is not a String')
-                    self.model[key] = self.blank[key] = defaultValue
+                    self.model[key] = self.blank[key] = defaultValue.trim()
                 }
             }
 
@@ -177,12 +177,13 @@ class SchemaModel {
                         throw new TypeError('Object property ' + key + ' of value, ' + propValue + ', must be a String or have a toString method.');
                     if (propValue instanceof Array)
                         throw new TypeError('Object property ' + key + ' is an Array. Arrays must be converted to Strings manually.')
-                    self.model[key] = propValue.toString()
+                    self.model[key] = propValue.toString().trim()
                 }
 
                 // Number
                 else if (schemaModelValue === Number) {
                     if (isString(propValue)) {
+                        propValue = propValue.trim()
                         if (Number.isNaN(parseInt(propValue)) || Number.isNaN(parseFloat(propValue)))
                             throw new TypeError('Failed to parseInt() on object property ' + key + ' , of value, ' + propValue + '.')
                         else {
@@ -233,7 +234,7 @@ class SchemaModel {
                         else {
                             propValue.forEach(function(item, i, arr) {
                                 self.model[key].push(item)
-                            })
+                            })                                                      
                         }
                     }
                 }
@@ -290,7 +291,7 @@ function isBoolean(value) {
 }
 
 function isFloatString(string) {
-    return /(-?(\d)+(\.){1}(\d)+)/.test(string)
+    return /^(-?(\d)+(\.){1}(\d)+)/.test(string)
 }
 
 module.exports = SchemaModel;

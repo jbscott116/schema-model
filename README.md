@@ -1,7 +1,7 @@
 # object-schema-model
-Safely apply nested object data to a model based on a predefined schema.
+Safely apply nested object data to a model based on a predefined schema. The primary use of this package is to enforce data integrity before inserting or updating data in a database. It's quite usefule for NoSQL databases, such as MongoDB, Firestore, or DynamoDB.
 
-*Note:* this package should not be used in production environments yet. It's still in its early stages. Feel free to experiment though.
+**Note:** this package should not be used in production environments yet. It's still in its early stages. Feel free to experiment though.
 
 # Installing
 Download from NPM
@@ -13,7 +13,7 @@ Add it to your project
 const SchemaModel = require('object-schema-model')
 ```
 
-# Getting Started
+# Guide
 ## Create a model schema
 Schemas are defined by using type constructors within an object
 ```
@@ -31,7 +31,7 @@ const MY_SCHEMA = {
 ```
 
 ## Create your Schema Model
-Instantiate a SchemaModel class with your schema
+Instantiate a SchemaModel class with your schema.
 ```
 var mySchemaModel = new SchemaModel(MY_SCHEMA)
 ```
@@ -59,13 +59,52 @@ var data = {
 mySchemaModel.apply(data)
 ```
 
+## Defining schemas for Array items
+Array items can be passed through SchemaModel instances as well.
+
+## Set default model values
+When creating a new instance of SchemaModel, you can specify default model values that will override the internal defaults. For example, models that are Numbers will be set to _0_. By adding the _defaults_ parameter, you can change this to _5_.
+
 # The SchemaModel class
 ## Properties
 ### model
+The data model
+
 ### schema
+The schema defined upon constructing the SchemaModel instance
+
 ### blank
+The model in it's blank state
+
 ### itemSchemas
+An object of SchemaModel instances used for array items.
+
 ## Methods
 ### constructor(schema)
-### apply(properties)
+Create a Schema Model
+```
+const SCHEMA = {...}
+var mySchemaModel = new SchemaModel(SCHEMA)
+```
+### apply(properties, appendArrayItems)
+Safely apply input data to the model. Returns the model.
+#### Parameters
+- inputData (Object) - Input data to be applied to the model
+- appendArrayItems (Boolean) - Should array items be appended?
+```
+var inputData = {...}
+mySchemaModel.apply(inputData, true)
+```
+
+### appendSchema(schema)
+Append new schema properties to the SchemaModel instance
+```
+const NEW_SCHEMA
+mySchemaModel.appendSchema(NEW_SCHEMA)
+```
+
 ### clear()
+Clear the model and reset the blank model. Returns the model.
+```
+mySchemaModel.clear()
+```
