@@ -58,3 +58,14 @@ var data = {
 // Apply data to the model
 mySchemaModel.apply(data)
 ```
+
+# The SchemaModel class
+## Properties
+### model
+### schema
+### blank
+### itemSchemas
+## Methods
+### constructor(schema)
+### apply(properties)
+### clear()
