@@ -15,7 +15,7 @@ npm install @jbscott/schema-model
 Add it to your project
 
 ```
-const SchemaModel = require('object-schema-model')
+const SchemaModel = require('@jbscott/schema-model')
 ```
 
 # Guide
