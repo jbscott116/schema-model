@@ -1,6 +1,6 @@
 {
   "name": "@jbscott/schema-model",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Safely apply nested object data to a model based on a schema.",
   "main": "SchemaModel.js",
   "scripts": {
