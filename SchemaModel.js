@@ -2,6 +2,11 @@ const defaultTypes = ['Object', 'String', 'Array', 'Number', 'Boolean', 'RegExp'
 
 class SchemaModel {
 
+    /**
+     * Create a Schema Model
+     * @param {Object} schema - The model schema
+     * @param {Object} [defaults] - Default model properties
+     */
     constructor(schema, defaults) {
         if (!schema)
             throw new Error('The schema argument must be provided.')
@@ -18,88 +23,93 @@ class SchemaModel {
         return this
     }
 
-    /** @method clear() 
-     * Resets the model to its blank state.
-    */
+    /**
+     * Clear the model and reset the blank model
+     * @param {Object} [defaults] - Default model properties 
+     */
     clear(defaults) {
         defaults = defaults || {};
         var self = this;
         var schemaKeys = Object.keys(this.schema);
         schemaKeys.forEach(function(key, i, arr) {
             var schemaModelValue = self.schema[key]
+            var defaultValue = defaults[key]
+
             if (isObject(schemaModelValue)) {
                 var subModel = new SchemaModel(schemaModelValue)
-                self.model[key] = subModel.clear()
-                self.blank[key] = subModel.clear()
+                self.model[key] = self.blank[key] = subModel.clear()
             }
+
             if (schemaModelValue === Object) {
-                if (defaults[key] === undefined) {
+                if (defaultValue === undefined) {
                     self.model[key] = {}
                     self.blank[key] = {}
-                } else {
-                    if (defaults[key].constructor.name !== 'Object')
+                } 
+                else {
+                    if (defaultValue.constructor.name !== 'Object')
                         throw new TypeError('Default value for key ' + key + ' is not an Object')
-                    self.model[key] = defaults[key]
-                    self.blank[key] = defaults[key]
+                    self.model[key] = self.blank[key] = defaultValue
                 }
             }
+
             if (schemaModelValue === String) {
-                if (defaults[key] === undefined) {
-                    self.model[key] = ''
-                    self.blank[key] = ''
-                } else {
-                    if (defaults[key].constructor.name !== 'String')
+                if (defaultValue === undefined) {
+                    self.model[key] = self.blank[key] = ''
+                } 
+                else {
+                    if (defaultValue.constructor.name !== 'String')
                         throw new TypeError('Default value for key ' + key + ' is not a String')
-                    self.model[key] = defaults[key]
-                    self.blank[key] = defaults[key]
+                    self.model[key] = self.blank[key] = defaultValue
                 }
             }
+
             if (schemaModelValue === Number) {
-                if (defaults[key] === undefined) {
-                    self.model[key] = 0
-                    self.blank[key] = 0
-                } else {
-                    if (defaults[key].constructor.name !== 'Number')
+                if (defaultValue === undefined) {
+                    self.model[key] = self.blank[key] = 0
+                } 
+                else {
+                    if (defaultValue.constructor.name !== 'Number')
                         throw new TypeError('Default value for key ' + key + ' is not a Number')
-                    self.model[key] = defaults[key]
-                    self.blank[key] = defaults[key]
+                    self.model[key] = self.blank[key] = defaultValue
                 }
             }
+
             if (schemaModelValue === Boolean) {
-                if (defaults[key] === undefined) {
-                    self.model[key] = false
-                    self.blank[key] = false
-                } else {
-                    if (defaults[key].constructor.name !== 'Boolean')
+                if (defaultValue === undefined) {
+                    self.model[key] = self.blank[key] = false
+                } 
+                else {
+                    if (defaultValue.constructor.name !== 'Boolean')
                         throw new TypeError('Default value for key ' + key + ' is not a Boolean')
-                    self.model[key] = defaults[key]
-                    self.blank[key] = defaults[key]
+                    self.model[key] = self.blank[key] = defaultValue
                 }
             }
+
             if (schemaModelValue === Function) {
-                if (defaults[key] === undefined) {
-                    self.model[key] = null
-                    self.blank[key] = null
-                } else {
-                    if (defaults[key].constructor.name !== 'Function')
+                if (defaultValue === undefined) {
+                    self.model[key] = self.blank[key] = null
+                } 
+                else {
+                    if (defaultValue.constructor.name !== 'Function')
                         throw new TypeError('Default value for key ' + key + ' is not a Function')
-                    self.model[key] = defaults[key]
-                    self.blank[key] = defaults[key]
+                    self.model[key] = self.blank[key] = defaultValue
                 }
             }
+
             if (schemaModelValue === Array) {
-                if (defaults[key] === undefined) {
+                if (defaultValue === undefined) {
                     self.model[key] = []
                     self.blank[key] = []
-                } else {
-                    if (defaults[key].constructor.name !== 'Array')
+                } 
+                else {
+                    if (defaultValue.constructor.name !== 'Array')
                         throw new TypeError('Default value for key ' + key + ' is not an Array')
-                    self.model[key] = defaults[key]
-                    self.blank[key] = defaults[key]
+                    self.model[key] = self.blank[key] = defaultValue
                 }
             }
+
             if (schemaModelValue instanceof Array) {
-                if (defaults[key] === undefined) {
+                if (defaultValue === undefined) {
                     if (schemaModelValue.length && schemaModelValue[0] instanceof SchemaModel) {
                         self.itemSchemas[key] = schemaModelValue[0]
                         self.schema[key] = Array
@@ -110,35 +120,34 @@ class SchemaModel {
                         self.model[key] = []
                         self.blank[key] = []
                     }
-                } else {
-                    if (defaults[key].constructor.name !== 'Array')
+                } 
+                else {
+                    if (defaultValue.constructor.name !== 'Array')
                         throw new TypeError('Default value for key ' + key + ' is not an Array')
-                    self.model[key] = defaults[key]
-                    self.model[blank] = defaults[key]
+                    self.model[key] = self.blank[key] = defaultValue
                 }
             }
+
             if (schemaModelValue && !defaultTypes.includes(schemaModelValue.constructor.name)) {
                 console.log(schemaModelValue.constructor.name)
-                if (defaults[key] === undefined) {
-                    self.model[key] = null
-                    self.blank[key] = null
+                if (defaultValue === undefined) {
+                    self.model[key] = self.blank[key] = null
                 }
                 else {
-                    if (self.schemaModelValue.constructor.name !== defaults[key].constructor.name)
+                    if (self.schemaModelValue.constructor.name !== defaultValue.constructor.name)
                         throw new TypeError('The default value for key ' + key + ' should be of type', self.schemaModelValue.constructor.name)
-                    self.model[key] = defaults[key]
-                    self.model[blank] = defaults[key]
+                    self.model[key] = self.blank[key] = defaultValue
                 }
             }
         })
-
         return this.model;
     }
 
-    /** @method apply(props) 
-     * Applies properties of an input object to the model
-     * @param props: Object of properties to apply to the model
-    */
+    /**
+     * Safely apply input data to the model
+     * @param {Object} props - Input data to be applied to the model
+     * @param {Boolean} [appendArrayItems] - Should array items be appended? @default [false]
+     */
     apply(props, appendArrayItems) {
         if (!props)
             throw new Error('An object is required for the \'props\' argument!')
@@ -239,27 +248,17 @@ class SchemaModel {
         return this.model
     }
 
-    /* appendSchema(newSchema) {
+    /**
+     * Append new schema properties to the SchemaModel instance
+     * @param {Object} newSchema 
+     */
+    appendSchema(newSchema) {
         var self = this;
         var newSchemaKeys = Object.keys(newSchema)
         newSchemaKeys.forEach(function(key, i, arr) {
             self.schema[key] = newSchema[key];
         })
-    } */
-
-    /** @method readSchema()
-     * Returns a human-readable string of the schema
-     */
-    /* readSchema() {
-        return true
-    } */
-
-    /** @method flatten() 
-     * Flattens the model
-    */
-    /* flatten() {
-        return true
-    } */
+    }
 };
 
 function isObject(value) {
@@ -288,14 +287,6 @@ function isRegExp(value) {
 
 function isBoolean(value) {
     return typeof value === 'boolean'
-}
-
-function Float() {
-    return 0.0;
-}
-
-function Integer() {
-    return 0;
 }
 
 function isFloatString(string) {
