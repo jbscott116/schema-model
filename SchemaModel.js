@@ -1,6 +1,8 @@
+const defaultTypes = ['Object', 'String', 'Array', 'Number', 'Boolean', 'RegExp']
+
 class SchemaModel {
 
-    constructor(schema) {
+    constructor(schema, defaults) {
         if (!schema)
             throw new Error('The schema argument must be provided.')
         if (!isObject(schema))
@@ -11,15 +13,16 @@ class SchemaModel {
         this.schema = {}
         this.model = {}
         this.schema = Object.assign(this.schema, schema)
-        this.model = this.clear()
-        this.clear()
+        this.model = this.clear(defaults)
+        this.clear(defaults)
         return this
     }
 
     /** @method clear() 
      * Resets the model to its blank state.
     */
-    clear() {
+    clear(defaults) {
+        defaults = defaults || {};
         var self = this;
         var schemaKeys = Object.keys(this.schema);
         schemaKeys.forEach(function(key, i, arr) {
@@ -30,40 +33,80 @@ class SchemaModel {
                 self.blank[key] = subModel.clear()
             }
             if (schemaModelValue === Object) {
-                self.model[key] = {}
-                self.blank[key] = {}
+                if (defaults[key] === undefined) {
+                    self.model[key] = {}
+                    self.blank[key] = {}
+                } else {
+                    self.model[key] = defaults[key]
+                    self.blank[key] = defaults[key]
+                }
             }
             if (schemaModelValue === String) {
-                self.model[key] = ''
-                self.blank[key] = ''
+                if (defaults[key] === undefined) {
+                    self.model[key] = ''
+                    self.blank[key] = ''
+                } else {
+                    self.model[key] = defaults[key]
+                    self.blank[key] = defaults[key]
+                }
             }
             if (schemaModelValue === Number) {
-                self.model[key] = 0
-                self.blank[key] = 0
+                if (defaults[key] === undefined) {
+                    self.model[key] = 0
+                    self.blank[key] = 0
+                } else {
+                    self.model[key] = defaults[key]
+                    self.blank[key] = defaults[key]
+                }
             }
             if (schemaModelValue === Boolean) {
-                self.model[key] = false
-                self.blank[key] = false
+                if (defaults[key] === undefined) {
+                    self.model[key] = false
+                    self.blank[key] = false
+                } else {
+                    self.model[key] = defaults[key]
+                    self.blank[key] = defaults[key]
+                }
             }
             if (schemaModelValue === Function) {
-                self.model[key] = null
-                self.blank[key] = null
+                if (defaults[key] === undefined) {
+                    self.model[key] = null
+                    self.blank[key] = null
+                } else {
+                    self.model[key] = defaults[key]
+                    self.blank[key] = defaults[key]
+                }
             }
             if (schemaModelValue === Array) {
-                self.model[key] = []
-                self.blank[key] = []
+                if (defaults[key] === undefined) {
+                    self.model[key] = []
+                    self.blank[key] = []
+                } else {
+                    self.model[key] = defaults[key]
+                    self.blank[key] = defaults[key]
+                }
             }
             if (schemaModelValue === Float) {
-                self.model[key] = 0.0
-                self.blank[key] = 0.0
+                if (defaults[key] === undefined) {
+                    self.model[key] = 0.0
+                    self.blank[key] = 0.0
+                } else {
+                    self.model[key] = defaults[key]
+                    self.blank[key] = defaults[key]
+                }
             }
             if (schemaModelValue === Integer) {
-                self.model[key] = 0
-                self.blank[key] = 0
+                if (defaults[key] === undefined) {
+                    self.model[key] = 0
+                    self.blank[key] = 0
+                } else {
+                    self.model[key] = defaults[key]
+                    self.blank[key] = defaults[key]
+                }
             }
             if (schemaModelValue instanceof Array) {
-                if (schemaModelValue.length && isObject(schemaModelValue[0]) && Object.keys(schemaModelValue[0]).length) {
-                    self.itemSchemas[key] = new SchemaModel(schemaModelValue[0])
+                if (schemaModelValue.length && schemaModelValue[0] instanceof SchemaModel) {
+                    self.itemSchemas[key] = schemaModelValue[0]
                     self.schema[key] = Array
                     self.model[key] = []
                     self.blank[key] = []
@@ -72,6 +115,9 @@ class SchemaModel {
                     self.model[key] = []
                     self.blank[key] = []
                 }
+            }
+            if (!defaultTypes.includes(schemaModelValue.constructor.name)) {
+                
             }
         })
 
@@ -153,7 +199,7 @@ class SchemaModel {
                         // Use an existing array item schema
                         if (self.itemSchemas[key]) {
                             propValue.forEach(function(item, i, arr) {
-                                var itemModel = new SchemaModel(self.itemSchemas[key].schema)
+                                var itemModel = new SchemaModel(self.itemSchemas[key].schema, self.itemSchemas[key].defaults)
                                 itemModel.apply(item, appendArrayItems)
                                 self.model[key].push(itemModel.model)
                             })

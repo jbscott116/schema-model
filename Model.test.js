@@ -63,11 +63,11 @@ const BLANK = {
 
 const ARRAY_MODEL_SCHEMA = {
     name: String,
-    list: [{
+    list: [new SchemaModel({
         car: Boolean,
         cat: Boolean,
         dog: Boolean
-    }]
+    })]
 }
 
 const DEEP_SCHEMA = {
@@ -78,13 +78,13 @@ const DEEP_SCHEMA = {
         last: String,
         phone: String
     },
-    posts: [{
+    posts: [new SchemaModel({
         title: String,
-        comments: [{
+        comments: [new SchemaModel({
             id: String,
             content: String
-        }]
-    }]
+        })]
+    })]
 }
 
 describe('SchemaModel', () => {
@@ -255,6 +255,7 @@ describe('SchemaModel', () => {
                     cat: Boolean,
                     dog: Boolean
                 }
+                
                 expect(myArrayModel.itemSchemas.list).toBeDefined()
                 expect(myArrayModel.itemSchemas.list).toBeInstanceOf(SchemaModel)
                 expect(myArrayModel.itemSchemas.list.schema).toStrictEqual(expectedArraySchema)
